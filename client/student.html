@@ -64,9 +64,11 @@
       <section class="s-main">
         <div class="stage" id="stage">
           <div class="stage-head">
+
             <div class="grow stage-label" id="stageLabel"><span class="dot"></span><span>منتظر شروع ارائهٔ استاد</span></div>
             <button class="btn sm ghost icon-btn" id="btnVol" title="قطع و وصل صدا"><i data-i="volume"></i></button>
             <button class="btn sm ghost icon-btn" id="btnFull" title="تمام‌صفحه"><i data-i="maximize"></i></button>
+
           </div>
           <div class="stage-view" id="stageView">
             <div class="frame" id="frame">
@@ -78,9 +80,13 @@
               </div>
               <div class="stage-msg" id="stageMsg" hidden><span id="stageMsgText">تصویر در حال دریافت است…</span></div>
               <!-- <div class="chip" id="boardChip" hidden><i data-i="pen"></i><span id="boardChipText"></span></div> -->
-              <div class="pip remote" id="camPip" hidden><video id="camVideo" autoplay muted playsinline></video></div>
+              <div class="pip remote" id="camPip" hidden>
+                <video id="camVideo" autoplay muted playsinline></video>
+                <button class="pip-full" id="btnCamFull" title="تمام‌صفحه دوربین"><i data-i="maximize"></i></button>
+              </div>
             </div>
           </div>
+          
         </div>
 
         <div class="s-actions">

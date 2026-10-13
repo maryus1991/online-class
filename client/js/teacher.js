@@ -449,6 +449,27 @@ document.addEventListener("keydown", (e) => {
 $("#btnMic").addEventListener("click", toggleMic);
 $("#btnCam").addEventListener("click", toggleCam);
 $("#btnShare").addEventListener("click", () => (S.mode === "screen" ? stopScreen() : startScreen()));
+
+// تمام‌صفحه کردن تخته / صحنه
+$("#btnFull").addEventListener("click", () => {
+  const el = $("#stageView");
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  } else {
+    el.requestFullscreen?.().catch(() => toast("تمام‌صفحه در این مرورگر ممکن نیست", "warn"));
+  }
+});
+
+// تغییر آیکون وقتی وارد/خارج تمام‌صفحه می‌شویم
+document.addEventListener("fullscreenchange", () => {
+  const btn = $("#btnFull");
+  if (!btn) return;
+  const isFull = Boolean(document.fullscreenElement);
+  setIcon(btn, isFull ? "x" : "maximize");
+  btn.title = isFull ? "خروج از تمام‌صفحه" : "تمام‌صفحه";
+});
+
+
 $$("#segMode button").forEach((b) =>
   b.addEventListener("click", () => {
     if (b.dataset.mode === "board") S.mode === "screen" ? stopScreen() : S.mode !== "board" && startBoard();
@@ -465,6 +486,17 @@ $("#fileInput").addEventListener("change", async (e) => {
     await board.loadFile(f);
   } catch (err) {
     toast(err.message || "فایل باز نشد", "error");
+  }
+});
+// تمام‌صفحه دوربین استاد
+$("#btnCamFull")?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  const pip = $("#camPip");
+  if (!pip) return;
+  if (document.fullscreenElement === pip) {
+    document.exitFullscreen();
+  } else {
+    pip.requestFullscreen?.().catch(() => toast("تمام‌صفحه در این مرورگر ممکن نیست", "warn"));
   }
 });
 $("#pgNext").addEventListener("click", () => board.goto(board.doc.page + 1));

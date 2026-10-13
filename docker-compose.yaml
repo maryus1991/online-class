@@ -1,41 +1,16 @@
-# # فقط یک سرویس: سرور Bun + ElysiaJS + mediasoup (بدون دیتابیس، Redis و LiveKit)
-# services:
-#   class:
-#     build: .
-#     restart: unless-stopped
-#     env_file: .env
-#     environment:
-#       PORT: "3000"
-#     ports:
-#       - "${PORT:-3000}:3000"
-#       - "${RTC_PORT_MIN:-40000}-${RTC_PORT_MAX:-40001}:${RTC_PORT_MIN:-40000}-${RTC_PORT_MAX:-40001}/udp"
-#       - "${RTC_PORT_MIN:-40000}-${RTC_PORT_MAX:-40001}:${RTC_PORT_MIN:-40000}-${RTC_PORT_MAX:-40001}/tcp"
-
-
 services:
   app:
     build: .
     restart: unless-stopped
     env_file: .env
+    network_mode: host          # خیلی مهم برای WebRTC
     environment:
       PORT: "3000"
-    ports:
-      - "${PORT:-3000}:3000"
-      - "${RTC_PORT_MIN:-40000}-${RTC_PORT_MAX:-40100}:${RTC_PORT_MIN:-40000}-${RTC_PORT_MAX:-40100}/udp"
-      - "${RTC_PORT_MIN:-40000}-${RTC_PORT_MAX:-40100}:${RTC_PORT_MIN:-40000}-${RTC_PORT_MAX:-40100}/tcp"
-    depends_on:
-      - coturn
-    # volumes:
-    #   - .client/:/app/client
-    #   - .server/:/app/server
-    networks:
-      - webrtc
-    
 
   coturn:
     image: coturn/coturn:latest
     restart: unless-stopped
-    network_mode: host          # بهترین عملکرد برای TURN (توصیه می‌شه)
+    network_mode: host
     environment:
       - DETECT_EXTERNAL_IP=yes
       - DETECT_RELAY_IP=yes
@@ -47,16 +22,46 @@ services:
       --realm=myrealm
       --user=turnuser:turnpass
       --min-port=49160
-      --max-port=49200
+      --max-port=49300
+      --listening-port=3478
 
-    # اگر نمی‌خوای از network_mode: host استفاده کنی، این بخش رو جایگزین کن:
-    # ports:
-    #   - "3478:3478"
-    #   - "3478:3478/udp"
-    #   - "49160-49200:49160-49200/udp"
-    # networks:
-    #   - webrtc
 
-networks:
-  webrtc:
-    driver: bridge
+# services:
+#   app:
+#     build: .
+#     restart: unless-stopped
+#     env_file: .env
+#     environment:
+#       PORT: "3000"
+#     ports:
+#       - "${PORT:-3000}:3000"
+#       - "${RTC_PORT_MIN:-40000}-${RTC_PORT_MAX:-40100}:${RTC_PORT_MIN:-40000}-${RTC_PORT_MAX:-40100}/udp"
+#       - "${RTC_PORT_MIN:-40000}-${RTC_PORT_MAX:-40100}:${RTC_PORT_MIN:-40000}-${RTC_PORT_MAX:-40100}/tcp"
+#     depends_on:
+#       - coturn
+
+#     networks:
+#       - webrtc
+    
+
+#   coturn:
+#     image: coturn/coturn:latest
+#     restart: unless-stopped
+#     network_mode: host
+#     environment:
+#       - DETECT_EXTERNAL_IP=yes
+#       - DETECT_RELAY_IP=yes
+#     command: >
+#       --log-file=stdout
+#       --lt-cred-mech
+#       --fingerprint
+#       --no-multicast-peers
+#       --realm=myrealm
+#       --user=turnuser:turnpass
+#       --min-port=49160
+#       --max-port=49300
+
+
+# networks:
+#   webrtc:
+#     driver: bridge

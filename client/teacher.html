@@ -79,6 +79,8 @@
             </div>
             <div class="grow stage-label" id="stageLabel"><span class="dot"></span><span>تخته آمادهٔ نوشتن است</span></div>
             <span class="pill" id="peerAudioPill" hidden><i data-i="mic"></i><span id="peerAudioText"></span></span>
+
+            
           </div>
           <div class="stage-view" id="stageView">
             <div class="frame" id="frame">
@@ -89,8 +91,11 @@
                 <h3>هنوز چیزی نمایش داده نمی‌شود</h3>
                 <p>تخته یا اشتراک صفحه را شروع کنید تا دانش‌آموزان آن را ببینند.</p>
               </div>
-              <div class="pip" id="camPip" hidden><video id="camPreview" autoplay muted playsinline></video></div>
-            </div>
+              <div class="pip" id="camPip" hidden>
+                <video id="camPreview" autoplay muted playsinline></video>
+                <button class="pip-full" id="btnCamFull" title="تمام‌صفحه دوربین"><i data-i="maximize"></i></button>
+              </div>
+              </div>
             <div class="dock" id="dock">
               <button class="tool is-on" data-tool="pen" title="قلم"><i data-i="pen"></i></button>
               <button class="tool" data-tool="line" title="خط"><i data-i="line"></i></button>
@@ -110,6 +115,15 @@
               <button class="tool" id="btnUndo" title="بازگرداندن آخرین حرکت"><i data-i="undo"></i></button>
               <button class="tool danger" id="btnClear" title="پاک‌کردن کامل صفحهٔ تخته"><i data-i="trash"></i></button>
               <button class="tool" id="btnTheme" title="تخته سفید/تیره"><i data-i="sun"></i></button>
+              <button class="btn sm ghost icon-btn" id="btnFull" title=" تمام‌ صفحه کردن صفحه"><i data-i="maximize"></i></button>
+
+              <div class="pager" id="pager" hidden>
+                <button class="btn ghost icon-btn" id="pgPrev" title="صفحهٔ قبل"><i data-i="chevron-right"></i></button>
+
+                <span class="num" id="pgText">۱ از ۱</span>
+                <button class="btn ghost icon-btn" id="pgNext" title="صفحهٔ بعد"><i data-i="chevron-left"></i></button>
+
+            </div>
             </div>
           </div>
         </div>
@@ -122,11 +136,7 @@
           <span class="sep"></span>
           <button class="btn ctl" id="btnFile"><i data-i="file"></i><span class="lbl">تصویر یا PDF</span></button>
           <input type="file" id="fileInput" accept="image/*,application/pdf" hidden />
-          <div class="pager" id="pager" hidden>
-            <button class="btn ghost icon-btn" id="pgNext" title="صفحهٔ بعد"><i data-i="chevron-left"></i></button>
-            <span class="num" id="pgText">۱ از ۱</span>
-            <button class="btn ghost icon-btn" id="pgPrev" title="صفحهٔ قبل"><i data-i="chevron-right"></i></button>
-          </div>
+
           <button class="btn ctl ghost" id="btnCloseDoc" hidden><i data-i="x"></i><span class="lbl">بستن فایل</span></button>
         </div>
       </section>

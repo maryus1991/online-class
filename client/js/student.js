@@ -332,6 +332,16 @@ $("#btnFull").addEventListener("click", () => {
   if (document.fullscreenElement) document.exitFullscreen();
   else t.requestFullscreen?.().catch(() => toast("تمام‌صفحه در این مرورگر ممکن نیست", "warn"));
 });
+$("#btnCamFull")?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  const pip = $("#camPip");
+  if (!pip) return;
+  if (document.fullscreenElement === pip) {
+    document.exitFullscreen();
+  } else {
+    pip.requestFullscreen?.().catch(() => toast("تمام‌صفحه در این مرورگر ممکن نیست", "warn"));
+  }
+});
 $("#btnLeave").addEventListener("click", async () => {
   if (await confirmDialog({ title: "از کلاس خارج می‌شوید؟", confirmText: "خروج", danger: true })) {
     S.ended = true;

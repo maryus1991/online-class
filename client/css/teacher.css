@@ -278,3 +278,19 @@ input[type="range"]::-moz-range-thumb {
     width: 64px;
   }
 }
+#stageView:fullscreen {
+  margin: 0;
+  border-radius: 0;
+  background: #04070f;
+  display: grid;
+  place-items: center;
+}
+#stageView:fullscreen .frame {
+  width: min(100vw, 100vh * 16 / 9);
+  height: min(100vh, 100vw * 9 / 16);
+  max-width: 100%;
+  max-height: 100%;
+}
+#stageView:fullscreen .dock {
+  inset-block-end: 20px;
+}
