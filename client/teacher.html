@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#070d1b" />
+  <title>پنل استاد · کلاس زنده</title>
+  <link rel="stylesheet" href="/css/common.css" />
+  <link rel="stylesheet" href="/css/teacher.css" />
+</head>
+<body class="teacher">
+
+  <!-- ورود استاد -->
+  <main class="join" id="join">
+    <section class="join-art" aria-hidden="true">
+      <svg class="ripples" viewBox="0 0 600 600">
+        <circle cx="300" cy="300" r="40" opacity=".95"/><circle cx="300" cy="300" r="90" opacity=".7"/>
+        <circle cx="300" cy="300" r="150" opacity=".5"/><circle cx="300" cy="300" r="215" opacity=".32"/>
+        <circle cx="300" cy="300" r="285" opacity=".18"/><circle cx="300" cy="300" r="360" opacity=".09"/>
+      </svg>
+      <h1>کلاست را زنده<br />برگزار کن</h1>
+      <p>تخته، صفحهٔ نمایش، دوربین و پرسش‌وپاسخ، همه در یک اتاق و همین لحظه.</p>
+    </section>
+    <section class="join-panel">
+      <form class="join-card" id="joinForm" autocomplete="off">
+        <h2>شروع کلاس</h2>
+        <p class="lead">کد کلاس را به دانش‌آموزان بدهید تا با پیوند دانش‌آموز وارد شوند.</p>
+        <div class="join-error" id="joinError" role="alert"></div>
+        <div class="field">
+          <label for="fTitle">عنوان کلاس</label>
+          <input class="input" id="fTitle" maxlength="80" placeholder="مثلاً: ریاضی نهم، فصل سوم" />
+        </div>
+        <div class="field">
+          <label for="fRoom">کد کلاس</label>
+          <input class="input ltr" id="fRoom" maxlength="40" required placeholder="math-9" spellcheck="false" />
+        </div>
+        <div class="field">
+          <label for="fName">نام شما</label>
+          <input class="input" id="fName" maxlength="40" required placeholder="نام استاد" />
+        </div>
+        <div class="field">
+          <label for="fKey">کلید استاد</label>
+          <input class="input ltr" id="fKey" type="password" required placeholder="••••••••" spellcheck="false" />
+          <span class="hint">کلید توسعه‌ای است و در متغیر <span class="mono ltr">TEACHER_KEY</span> سرور تنظیم می‌شود.</span>
+        </div>
+        <button class="btn primary block" id="joinBtn" type="submit" style="min-height:48px"><i data-i="live"></i>شروع کلاس</button>
+      </form>
+    </section>
+  </main>
+
+  <!-- محیط تدریس -->
+  <div id="app" hidden>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark"><i data-i="live"></i></div>
+        <div class="brand-text">
+          <div class="brand-title" id="classTitle">کلاس زنده</div>
+          <div class="brand-sub">پنل استاد · کد <span class="ltr mono" id="roomCode"></span></div>
+        </div>
+      </div>
+      <div class="top-status">
+        <span class="pill" id="livePill"><span class="dot"></span><span id="liveText">آماده</span></span>
+        <span class="pill" id="connPill"><span class="dot"></span><span id="connText">در حال اتصال</span></span>
+        <span class="pill hide-sm" id="countPill"><i data-i="users"></i><span class="num" id="countText">۰</span> نفر</span>
+      </div>
+      <div class="top-actions">
+        <button class="btn sm" id="btnCopy" title="کپی پیوند ورود دانش‌آموز"><i data-i="copy"></i><span class="lbl">پیوند دانش‌آموز</span></button>
+        <button class="btn sm danger" id="btnEnd"><i data-i="power"></i><span class="lbl">پایان کلاس</span></button>
+      </div>
+    </header>
+
+    <main class="t-layout">
+      <section class="t-main">
+        <div class="stage" id="stage">
+          <div class="stage-head">
+            <div class="seg" id="segMode" role="tablist" aria-label="حالت نمایش">
+              <button data-mode="board" class="is-on"><i data-i="board"></i>تخته</button>
+              <button data-mode="screen"><i data-i="screen"></i>اشتراک صفحه</button>
+            </div>
+            <div class="grow stage-label" id="stageLabel"><span class="dot"></span><span>تخته آمادهٔ نوشتن است</span></div>
+            <span class="pill" id="peerAudioPill" hidden><i data-i="mic"></i><span id="peerAudioText"></span></span>
+          </div>
+          <div class="stage-view" id="stageView">
+            <div class="frame" id="frame">
+              <canvas id="boardCanvas" aria-label="تختهٔ مجازی"></canvas>
+              <video id="screenPreview" autoplay muted playsinline hidden></video>
+              <div class="stage-empty" id="stageEmpty" hidden>
+                <div class="big"><i data-i="board"></i></div>
+                <h3>هنوز چیزی نمایش داده نمی‌شود</h3>
+                <p>تخته یا اشتراک صفحه را شروع کنید تا دانش‌آموزان آن را ببینند.</p>
+              </div>
+              <div class="pip" id="camPip" hidden><video id="camPreview" autoplay muted playsinline></video></div>
+            </div>
+            <div class="dock" id="dock">
+              <button class="tool is-on" data-tool="pen" title="قلم"><i data-i="pen"></i></button>
+              <button class="tool" data-tool="line" title="خط"><i data-i="line"></i></button>
+              <button class="tool" data-tool="rect" title="مستطیل"><i data-i="rect"></i></button>
+              <button class="tool" data-tool="ellipse" title="بیضی"><i data-i="ellipse"></i></button>
+              <button class="tool" data-tool="arrow" title="پیکان"><i data-i="arrow"></i></button>
+              <button class="tool" data-tool="text" title="متن"><i data-i="text"></i></button>
+              <button class="tool" data-tool="eraser" title="پاک‌کن"><i data-i="eraser"></i></button>
+              <span class="sep"></span>
+              <div class="swatches" id="swatches"></div>
+              <span class="sep"></span>
+              <div class="size-wrap">
+                <span class="size-dot"><i id="sizeDot"></i></span>
+                <input type="range" id="sizeRange" min="1" max="24" value="4" aria-label="ضخامت قلم" />
+              </div>
+              <span class="sep"></span>
+              <button class="tool" id="btnUndo" title="بازگرداندن آخرین حرکت"><i data-i="undo"></i></button>
+              <button class="tool danger" id="btnClear" title="پاک‌کردن کامل صفحهٔ تخته"><i data-i="trash"></i></button>
+              <button class="tool" id="btnTheme" title="تخته سفید/تیره"><i data-i="sun"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls" id="controls">
+          <button class="btn ctl is-off" id="btnMic"><i data-i="mic-off"></i><span class="lbl">میکروفون</span></button>
+          <button class="btn ctl" id="btnCam"><i data-i="video-off"></i><span class="lbl">دوربین</span></button>
+          <span class="sep"></span>
+          <button class="btn ctl" id="btnShare"><i data-i="screen"></i><span class="lbl">اشتراک صفحه</span></button>
+          <span class="sep"></span>
+          <button class="btn ctl" id="btnFile"><i data-i="file"></i><span class="lbl">تصویر یا PDF</span></button>
+          <input type="file" id="fileInput" accept="image/*,application/pdf" hidden />
+          <div class="pager" id="pager" hidden>
+            <button class="btn ghost icon-btn" id="pgNext" title="صفحهٔ بعد"><i data-i="chevron-left"></i></button>
+            <span class="num" id="pgText">۱ از ۱</span>
+            <button class="btn ghost icon-btn" id="pgPrev" title="صفحهٔ قبل"><i data-i="chevron-right"></i></button>
+          </div>
+          <button class="btn ctl ghost" id="btnCloseDoc" hidden><i data-i="x"></i><span class="lbl">بستن فایل</span></button>
+        </div>
+      </section>
+
+      <aside class="panel" id="panel">
+        <nav class="tabs" role="tablist">
+          <button class="tab is-on" data-tab="people"><i data-i="users"></i>دانش‌آموزان<span class="badge amber" id="badgePeople" hidden>۰</span></button>
+          <button class="tab" data-tab="chat"><i data-i="chat"></i>چت<span class="badge" id="badgeChat" hidden>۰</span></button>
+          <button class="tab" data-tab="questions"><i data-i="help"></i>پرسش<span class="badge" id="badgeQ" hidden>۰</span></button>
+        </nav>
+        <section class="pane is-on" id="pane-people"><div class="pane-scroll" id="peopleList"></div></section>
+        <section class="pane" id="pane-chat"><div id="chatRoot" style="display:flex;flex-direction:column;flex:1;min-height:0"></div></section>
+        <section class="pane" id="pane-questions"><div class="pane-scroll" id="qRoot"></div></section>
+      </aside>
+    </main>
+  </div>
+
+  <div id="audioSink" hidden></div>
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <script src="/vendor/mediasoup-client.js"></script>
+  <script type="module" src="/js/teacher.js"></script>
+</body>
+</html>

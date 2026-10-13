@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#070d1b" />
+  <title>ورود به کلاس · کلاس زنده</title>
+  <link rel="stylesheet" href="/css/common.css" />
+  <link rel="stylesheet" href="/css/student.css" />
+</head>
+<body class="student">
+
+  <!-- ورود دانش‌آموز -->
+  <main class="join" id="join">
+    <section class="join-art" aria-hidden="true">
+      <svg class="ripples" viewBox="0 0 600 600">
+        <circle cx="300" cy="300" r="40" opacity=".95"/><circle cx="300" cy="300" r="90" opacity=".7"/>
+        <circle cx="300" cy="300" r="150" opacity=".5"/><circle cx="300" cy="300" r="215" opacity=".32"/>
+        <circle cx="300" cy="300" r="285" opacity=".18"/><circle cx="300" cy="300" r="360" opacity=".09"/>
+      </svg>
+      <h1>کلاس شروع شده،<br />به ما بپیوند</h1>
+      <p>تخته و صدای استاد را زنده ببین، سؤال بپرس و در پرسش‌های کلاس شرکت کن.</p>
+    </section>
+    <section class="join-panel">
+      <form class="join-card" id="joinForm" autocomplete="off">
+        <h2>ورود به کلاس</h2>
+        <p class="lead">کد کلاس را از استاد بگیرید و نامی که دوست دارید دیگران ببینند را بنویسید.</p>
+        <div class="join-error" id="joinError" role="alert"></div>
+        <div class="field">
+          <label for="fRoom">کد کلاس</label>
+          <input class="input ltr" id="fRoom" maxlength="40" required placeholder="math-9" spellcheck="false" />
+        </div>
+        <div class="field">
+          <label for="fName">نام شما</label>
+          <input class="input" id="fName" maxlength="40" required placeholder="مثلاً: سارا احمدی" />
+        </div>
+        <button class="btn primary block" id="joinBtn" type="submit" style="min-height:48px"><i data-i="live"></i>ورود به کلاس</button>
+        <span class="hint">برای شنیدن صدا، ورود را با کلیک انجام دهید. مرورگر فقط پس از کلیک اجازهٔ پخش صدا می‌دهد.</span>
+      </form>
+    </section>
+  </main>
+
+  <!-- کلاس -->
+  <div id="app" hidden>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark"><i data-i="live"></i></div>
+        <div class="brand-text">
+          <div class="brand-title" id="classTitle">کلاس زنده</div>
+          <div class="brand-sub" id="whoAmI"></div>
+        </div>
+      </div>
+      <div class="top-status">
+        <span class="pill" id="livePill"><span class="dot"></span><span id="liveText">منتظر استاد</span></span>
+        <span class="pill" id="connPill"><span class="dot"></span><span id="connText">در حال اتصال</span></span>
+        <span class="pill hide-sm"><i data-i="users"></i><span class="num" id="countText">۰</span> نفر</span>
+      </div>
+      <div class="top-actions">
+        <button class="btn sm ghost" id="btnLeave"><i data-i="power"></i><span class="lbl">خروج</span></button>
+      </div>
+    </header>
+
+    <main class="s-layout">
+      <section class="s-main">
+        <div class="stage" id="stage">
+          <div class="stage-head">
+            <div class="grow stage-label" id="stageLabel"><span class="dot"></span><span>منتظر شروع ارائهٔ استاد</span></div>
+            <button class="btn sm ghost icon-btn" id="btnVol" title="قطع و وصل صدا"><i data-i="volume"></i></button>
+            <button class="btn sm ghost icon-btn" id="btnFull" title="تمام‌صفحه"><i data-i="maximize"></i></button>
+          </div>
+          <div class="stage-view" id="stageView">
+            <div class="frame" id="frame">
+              <video id="mainVideo" autoplay muted playsinline></video>
+              <div class="stage-empty" id="stageEmpty">
+                <div class="big"><i data-i="board"></i></div>
+                <h3 id="emptyTitle">منتظر استاد</h3>
+                <p id="emptyText">به‌محض اینکه استاد تخته یا صفحه‌اش را نمایش بدهد، همین‌جا می‌بینید.</p>
+              </div>
+              <div class="stage-msg" id="stageMsg" hidden><span id="stageMsgText">تصویر در حال دریافت است…</span></div>
+              <div class="chip" id="boardChip" hidden><i data-i="pen"></i><span id="boardChipText"></span></div>
+              <div class="pip remote" id="camPip" hidden><video id="camVideo" autoplay muted playsinline></video></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-actions">
+          <button class="btn hand-btn" id="btnHand"><i data-i="hand"></i><span id="handText">دست بلند کردن</span></button>
+          <div class="mic-state" id="micState"><i data-i="mic-off"></i><span id="micText">میکروفون شما بسته است</span></div>
+          <button class="btn" id="btnMic" hidden><i data-i="mic"></i><span id="btnMicText">قطع میکروفون</span></button>
+          <div class="grow"></div>
+        </div>
+      </section>
+
+      <aside class="panel" id="panel">
+        <nav class="tabs" role="tablist">
+          <button class="tab is-on" data-tab="chat"><i data-i="chat"></i>چت<span class="badge" id="badgeChat" hidden>۰</span></button>
+          <button class="tab" data-tab="question"><i data-i="help"></i>سؤال<span class="badge amber" id="badgeQ" hidden>!</span></button>
+          <button class="tab" data-tab="people"><i data-i="users"></i>حاضران</button>
+        </nav>
+        <section class="pane is-on" id="pane-chat"><div id="chatRoot" style="display:flex;flex-direction:column;flex:1;min-height:0"></div></section>
+        <section class="pane" id="pane-question"><div class="pane-scroll" id="qRoot"></div></section>
+        <section class="pane" id="pane-people"><div class="pane-scroll" id="peopleList"></div></section>
+      </aside>
+    </main>
+  </div>
+
+  <div id="audioSink" hidden></div>
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <script src="/vendor/mediasoup-client.js"></script>
+  <script type="module" src="/js/student.js"></script>
+</body>
+</html>

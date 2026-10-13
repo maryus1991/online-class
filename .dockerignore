@@ -1,0 +1,4 @@
+**/node_modules
+client/vendor
+.git
+.env
