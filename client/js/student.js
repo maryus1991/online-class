@@ -206,7 +206,7 @@ function paintMode(mode) {
   const l = $("#stageLabel");
   l.lastElementChild.textContent = MODE_TEXT[mode];
   l.querySelector(".dot").className = "dot " + (live ? "ok" : "");
-  $("#boardChip").hidden = mode !== "board" || !$("#boardChipText").textContent;
+  // $("#boardChip").hidden = mode !== "board" || !$("#boardChipText").textContent;
   if (!S.mainConsumer) {
     $("#stageEmpty").hidden = false;
     $("#emptyTitle").textContent = live ? "در حال دریافت تصویر" : "منتظر استاد";
@@ -214,10 +214,10 @@ function paintMode(mode) {
   }
 }
 function paintBoardInfo(i) {
-  const names = { pen: "قلم", line: "خط", rect: "مستطیل", ellipse: "بیضی", arrow: "پیکان", text: "متن", eraser: "پاک‌کن" };
-  const t = i.kind === "board" ? "تخته · " + (names[i.tool] || "") : i.fileName + (i.pages > 1 ? " · صفحهٔ " + faNum(i.page) + " از " + faNum(i.pages) : "");
-  $("#boardChipText").textContent = t;
-  $("#boardChip").hidden = S.mode !== "board";
+  // const names = { pen: "قلم", line: "خط", rect: "مستطیل", ellipse: "بیضی", arrow: "پیکان", text: "متن", eraser: "پاک‌کن" };
+  // const t = i.kind === "board" ? "تخته · " + (names[i.tool] || "") : i.fileName + (i.pages > 1 ? " · صفحهٔ " + faNum(i.page) + " از " + faNum(i.pages) : "");
+  // $("#boardChipText").textContent = t;
+  // $("#boardChip").hidden = S.mode !== "board";
 }
 function setTeacherOnline(on) {
   S.teacherOnline = on;
