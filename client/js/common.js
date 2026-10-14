@@ -255,28 +255,60 @@ export function initJoin({ role, onSubmit }) {
   const btn = $("#joinBtn");
   const room = $("#fRoom");
   const name = $("#fName");
+  const title = $("#fTitle");
+  const key = $("#fKey");
   const p = qs();
-  if (p.get("room")) room.value = p.get("room");
-  else if (role === "teacher") room.value = "class-" + Math.random().toString(36).slice(2, 6);
-  name.value = localStorage.getItem("displayName:" + role) || "";
+
+  if (p.get("room")) {
+    room.value = p.get("room");
+  } else if (role === "teacher") {
+    room.value = "class-" + Math.random().toString(36).slice(2, 6);
+  }
+
+  name.value =
+    p.get("name") ||
+    localStorage.getItem("displayName:" + role) ||
+    "";
+
+  if (title && p.has("title")) {
+    title.value = p.get("title");
+  }
+
+  if (role === "teacher" && key && p.has("key")) {
+    key.value = p.get("key");
+  }
+
   const showErr = (m) => {
     err.textContent = m;
     err.classList.toggle("show", Boolean(m));
   };
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     showErr("");
     btn.disabled = true;
+
     const label = btn.lastChild.textContent;
     btn.lastChild.textContent = "در حال ورود…";
+
     try {
-      localStorage.setItem("displayName:" + role, name.value.trim());
-      await onSubmit({ room: room.value.trim(), name: name.value.trim(), title: $("#fTitle")?.value.trim(), key: $("#fKey")?.value });
+      localStorage.setItem(
+        "displayName:" + role,
+        name.value.trim()
+      );
+
+      await onSubmit({
+        room: room.value.trim(),
+        name: name.value.trim(),
+        title: title?.value.trim(),
+        key: key?.value,
+      });
     } catch (ex) {
       showErr(ex.message || "ورود ناموفق بود");
       btn.disabled = false;
       btn.lastChild.textContent = label;
     }
   });
+
   return { showErr };
 }

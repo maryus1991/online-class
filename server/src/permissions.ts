@@ -17,7 +17,7 @@ export interface AuthFail {
   message: string;
 }
 
-const ROOM_RE = /^[A-Za-z0-9_-]{3,40}$/;
+const ROOM_RE = /^[A-Za-z0-9_-]{3,72}$/;
 const CLIENT_RE = /^[A-Za-z0-9_-]{8,64}$/;
 
 function safeEqual(a: string, b: string): boolean {

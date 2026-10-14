@@ -9,7 +9,8 @@ services:
 
   coturn:
     image: coturn/coturn:latest
-    restart: unless-stopped
+
+
     network_mode: host
     environment:
       - DETECT_EXTERNAL_IP=yes
@@ -26,6 +27,22 @@ services:
       --listening-port=3478
 
 
+  monitor:
+    build: ./monitor
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      MONITOR_PORT: "9090"
+      MONITOR_TOKEN: "12312312"
+      MAX_CPU_PERCENT: "90"
+      MAX_RAM_PERCENT: "85"
+      MAX_DISK_PERCENT: "90"
+      # ظرفیت طراحی‌شده برای این سرور (کلاس ۳۰ نفره)
+      MAX_ROOMS: "25"
+      MAX_PEERS_PER_ROOM: "50"
+      BANDWIDTH_GBPS: "2.5"
+
+      
 # services:
 #   app:
 #     build: .
