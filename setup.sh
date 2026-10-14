@@ -40,12 +40,14 @@ DOMAIN="${DOMAIN// /}"
 [[ -z "$DOMAIN" ]] && err "دامنه خالی است."
 
 # تشخیص IP عمومی
-PUBLIC_IP="$(curl -4 -s --max-time 5 ifconfig.me 2>/dev/null || curl -4 -s --max-time 5 icanhazip.com 2>/dev/null || true)"
-if [[ -z "$PUBLIC_IP" ]]; then
-  read -rp "IP عمومی سرور را وارد کنید: " PUBLIC_IP
+read -rp "IP عمومی سرور را وارد کنید: " PUBLIC_IP
+
+if [[ ! "$PUBLIC_IP" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || \
+   ! python3 -c 'import ipaddress,sys; ipaddress.IPv4Address(sys.argv[1])' "$PUBLIC_IP" 2>/dev/null; then
+    echo "[ERROR] آدرس IPv4 معتبر نیست."
+    exit 1
 fi
-PUBLIC_IP="${PUBLIC_IP// /}"
-[[ -z "$PUBLIC_IP" ]] && err "IP عمومی مشخص نشد."
+
 
 info "دامنه : ${DOMAIN}"
 info "IP    : ${PUBLIC_IP}"
