@@ -248,7 +248,7 @@ export function setBadge(node, n) {
   node.textContent = typeof n === "number" ? faNum(n) : n || "";
 }
 
-/** فرم ورود: مقداردهی اولیه، نمایش خطا و جلوگیری از ارسال دوباره. */
+
 export function initJoin({ role, onSubmit }) {
   const form = $("#joinForm");
   const err = $("#joinError");
@@ -259,11 +259,11 @@ export function initJoin({ role, onSubmit }) {
   const key = $("#fKey");
   const p = qs();
 
-  if (p.get("room")) {
-    room.value = p.get("room");
-  } else if (role === "teacher") {
-    room.value = "class-" + Math.random().toString(36).slice(2, 6);
-  }
+  const hasRoom = Boolean(p.get("room"));
+  const hasName = Boolean(p.get("name"));
+  const hasKey = Boolean(p.get("key"));
+
+  if (hasRoom) room.value = p.get("room");
 
   name.value =
     p.get("name") ||
@@ -274,41 +274,64 @@ export function initJoin({ role, onSubmit }) {
     title.value = p.get("title");
   }
 
-  if (role === "teacher" && key && p.has("key")) {
+  if (role === "teacher" && key && hasKey) {
     key.value = p.get("key");
   }
 
-  const showErr = (m) => {
-    err.textContent = m;
-    err.classList.toggle("show", Boolean(m));
+  const autoJoin =
+    hasRoom &&
+    hasName &&
+    (role !== "teacher" || hasKey);
+
+  const showErr = (message) => {
+    err.textContent = message;
+    err.classList.toggle("show", Boolean(message));
   };
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     showErr("");
-    btn.disabled = true;
 
+    if (btn.disabled) return;
+
+    btn.disabled = true;
     const label = btn.lastChild.textContent;
     btn.lastChild.textContent = "در حال ورود…";
 
     try {
-      localStorage.setItem(
-        "displayName:" + role,
-        name.value.trim()
-      );
-
-      await onSubmit({
+      const values = {
         room: room.value.trim(),
         name: name.value.trim(),
         title: title?.value.trim(),
         key: key?.value,
-      });
+      };
+
+      if (!values.room || !values.name) {
+        throw new Error("کد کلاس و نام الزامی است.");
+      }
+
+      if (role === "teacher" && !values.key) {
+        throw new Error("احراز هویت استاد انجام نشد.");
+      }
+
+      localStorage.setItem(
+        "displayName:" + role,
+        values.name
+      );
+
+      // فقط یک درخواست ورود
+      await onSubmit(values);
     } catch (ex) {
       showErr(ex.message || "ورود ناموفق بود");
       btn.disabled = false;
       btn.lastChild.textContent = label;
     }
   });
+
+  if (autoJoin) {
+    // فرم ابتدا رویداد submit را ثبت می‌کند، سپس خودکار ارسال می‌شود.
+    queueMicrotask(() => form.requestSubmit());
+  }
 
   return { showErr };
 }
